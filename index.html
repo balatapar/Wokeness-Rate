@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wokeness-Rate | درجه‌بندی فیلم و سریال</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div class="bg-glow" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <div class="brand-mark">W</div>
+      <div>
+        <h1>Wokeness-Rate</h1>
+        <p class="subtitle">IMDb + Rotten Tomatoes + Metacritic + درجه‌ی Wokeness</p>
+      </div>
+    </div>
+    <button id="settingsBtn" class="btn btn-ghost" type="button" aria-haspopup="dialog">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      تنظیمات API
+    </button>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card search-card" aria-labelledby="searchTitle">
+    <h2 id="searchTitle">جست‌وجوی فیلم / سریال</h2>
+    <p class="hint">اسم را به فارسی یا انگلیسی + سال ساخت وارد کن. خروجی دقیقاً با فرمت درخواستی تو نمایش داده می‌شود.</p>
+
+    <div class="form-grid">
+      <label class="field field-span">
+        <span>نام فیلم / سریال</span>
+        <input id="titleInput" type="text" placeholder="مثلاً: The Night Agent / ایجنت شب" autocomplete="off" />
+      </label>
+      <label class="field">
+        <span>سال ساخت</span>
+        <input id="yearInput" type="number" inputmode="numeric" min="1900" max="2030" placeholder="مثلاً: 2023" />
+      </label>
+      <label class="field">
+        <span>نوع</span>
+        <select id="typeInput">
+          <option value="auto">خودکار</option>
+          <option value="movie">فیلم</option>
+          <option value="series">سریال</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button id="searchBtn" class="btn btn-primary" type="button">
+        <span class="btn-label">دریافت اطلاعات + درجه Wokeness</span>
+        <span class="spinner" id="spinner" hidden></span>
+      </button>
+      <button id="demoBtn" class="btn btn-secondary" type="button">نمایش نمونه (The Night Agent)</button>
+    </div>
+    <p class="samples">نمونه‌ها:
+      <button class="chip" data-sample="Barbie|2023">Barbie 2023</button>
+      <button class="chip" data-sample="The Last of Us|2023">The Last of Us 2023</button>
+      <button class="chip" data-sample="Oppenheimer|2023">Oppenheimer 2023</button>
+    </p>
+    <p id="statusLine" class="status" role="status"></p>
+  </section>
+
+  <section id="resultSection" class="card result-card" hidden aria-live="polite">
+    <div class="result-head">
+      <h2>نتیجه</h2>
+      <div class="result-tools">
+        <button id="copyBtn" class="btn btn-ghost btn-sm" type="button">کپی متن</button>
+        <span id="verifiedBadge" class="badge" hidden>تأیید OMDb ✓</span>
+      </div>
+    </div>
+
+    <div class="score-strip" id="scoreStrip"></div>
+
+    <pre id="resultText" class="result-text"></pre>
+
+    <div class="woke-meter">
+      <div class="woke-meter-head">
+        <span>درجه‌ی Wokeness</span>
+        <strong id="wokeNum">—</strong>
+      </div>
+      <div class="meter"><div id="meterFill" class="meter-fill"></div></div>
+      <p id="wokeReason" class="woke-reason"></p>
+    </div>
+  </section>
+
+  <section class="card history-card" aria-labelledby="histTitle">
+    <div class="result-head">
+      <h2 id="histTitle">کتابخانه‌ی ذخیره‌شده‌ی من <span id="histCount" class="pill">۰</span></h2>
+    </div>
+    <p class="hint">هر عنوانی که جست‌وجو می‌کنی با نتیجه‌ی کاملش <strong>خودکار</strong> در مرورگر ذخیره می‌شود. بعداً بدون تایپ و بدون مصرف API، فوری بازش کن.</p>
+    <div class="lib-toolbar">
+      <input id="histSearch" type="text" placeholder="جست‌وجو در ذخیره‌ها… (نام فارسی/انگلیسی)" autocomplete="off" />
+      <div class="lib-btns">
+        <button id="exportBtn" class="btn btn-ghost btn-sm" type="button">خروجی JSON</button>
+        <label class="btn btn-ghost btn-sm file-label">ورود JSON<input id="importFile" type="file" accept="application/json" hidden /></label>
+        <button id="clearHist" class="btn btn-ghost btn-sm danger" type="button">پاک کردن همه</button>
+      </div>
+    </div>
+    <div id="historyList" class="history-list"><p class="muted">هنوز چیزی جست‌وجو نشده.</p></div>
+  </section>
+
+  <section class="card criteria-card">
+    <h2>معیار درجه‌ی Wokeness (خلاصه)</h2>
+    <ul>
+      <li>تغییر نژاد / جنسیت / گرایش شخصیت نسبت به منبع اصلی بدون منطق داستانی</li>
+      <li>تنوع چک‌لیستی و تحمیلی (مثلاً در بستر تاریخی ناهمخوان)</li>
+      <li>دیالوگ شعاری فمینیستی / ضد مرد و «زن‌ها همیشه قوی‌ترن»</li>
+      <li>موعظه‌ی سیاسی: نژادپرستی نهادی، هویت جنسیتی، ترنس، اقلیم و...</li>
+      <li>زوم مصنوعی روی نژاد / گرایش برای نمایش تنوع</li>
+      <li>حس تبلیغاتی «باید درست رفتار کنیم» به‌جای داستان طبیعی</li>
+    </ul>
+    <p class="muted">نکته: برای سریال‌ها برآیند <strong>کل فصل‌ها</strong> سنجیده می‌شود. چیزی که از دل داستان و موقعیت واقعی دربیاید Woke نیست.</p>
+  </section>
+</main>
+
+<dialog id="settingsDialog" class="dialog">
+  <form method="dialog" class="dialog-inner">
+    <h2>تنظیمات API</h2>
+    <p class="hint">برای تحلیل دقیق Wokeness و امتیازهای به‌روز، کلید یکی از ارائه‌دهنده‌ها را وارد کن. کلید فقط در مرورگر تو (localStorage) ذخیره می‌شود.</p>
+    <label class="field"><span>ارائه‌دهنده</span>
+      <select id="providerInput">
+        <option value="openrouter">OpenRouter (پیشنهادی — مدل‌های رایگان)</option>
+        <option value="openai">OpenAI</option>
+        <option value="gemini">Google Gemini</option>
+      </select>
+    </label>
+    <label class="field"><span>مدل</span>
+      <input id="modelInput" type="text" placeholder="openai/gpt-4o-mini" />
+    </label>
+    <label class="field"><span>کلید API (هوش مصنوعی)</span>
+      <input id="apiKeyInput" type="password" placeholder="sk-... / sk-or-... / AIza..." autocomplete="off" />
+    </label>
+    <label class="field"><span>کلید OMDb (اختیاری — برای امتیازهای دقیق)</span>
+      <input id="omdbKeyInput" type="password" placeholder="OMDb API key از omdbapi.com" autocomplete="off" />
+      <small class="muted">از omdbapi.com/apikey.aspx رایگان بگیر و اینجا بگذار تا IMDb / RT / Metacritic واقعی بیاید.</small>
+    </label>
+    <div class="actions">
+      <button id="saveSettings" class="btn btn-primary" type="submit">ذخیره</button>
+      <button class="btn btn-ghost" type="submit">بستن</button>
+    </div>
+  </form>
+</dialog>
+
+<footer class="footer container">
+  <p class="muted">Wokeness-Rate — اجرا: کافیست فایل <code>index.html</code> را در مرورگر باز کنی یا با <code>python -m http.server</code> سرو کنی.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
